@@ -1,0 +1,65 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\FLAVIN\\OneDrive\\Desktop\\Maillot Store Website\\MaillotStore\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\MaillotStore.bundle.scp.css",
+      "PackagePath": "staticwebassets\\MaillotStore.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\FLAVIN\\OneDrive\\Desktop\\Maillot Store Website\\MaillotStore\\wwwroot\\Images\\Liverpool.jpeg",
+      "PackagePath": "staticwebassets\\Images\\Liverpool.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\FLAVIN\\OneDrive\\Desktop\\Maillot Store Website\\MaillotStore\\wwwroot\\Images\\PSG_Away_Jersey.jpg",
+      "PackagePath": "staticwebassets\\Images\\PSG_Away_Jersey.jpg"
+    },
+    {
+      "Id": "C:\\Users\\FLAVIN\\OneDrive\\Desktop\\Maillot Store Website\\MaillotStore\\wwwroot\\Images\\atlectico.png",
+      "PackagePath": "staticwebassets\\Images\\atlectico.png"
+    },
+    {
+      "Id": "C:\\Users\\FLAVIN\\OneDrive\\Desktop\\Maillot Store Website\\MaillotStore\\wwwroot\\Images\\cameroon.webp",
+      "PackagePath": "staticwebassets\\Images\\cameroon.webp"
+    },
+    {
+      "Id": "C:\\Users\\FLAVIN\\OneDrive\\Desktop\\Maillot Store Website\\MaillotStore\\wwwroot\\Images\\hero.jpg",
+      "PackagePath": "staticwebassets\\Images\\hero.jpg"
+    },
+    {
+      "Id": "C:\\Users\\FLAVIN\\OneDrive\\Desktop\\Maillot Store Website\\MaillotStore\\wwwroot\\Images\\maillotstore-logo.jpeg",
+      "PackagePath": "staticwebassets\\Images\\maillotstore-logo.jpeg"
+    },
+    {
+      "Id": "C:\\Users\\FLAVIN\\OneDrive\\Desktop\\Maillot Store Website\\MaillotStore\\wwwroot\\Images\\pool.jpg",
+      "PackagePath": "staticwebassets\\Images\\pool.jpg"
+    },
+    {
+      "Id": "C:\\Users\\FLAVIN\\OneDrive\\Desktop\\Maillot Store Website\\MaillotStore\\wwwroot\\Images\\wolves.jpg",
+      "PackagePath": "staticwebassets\\Images\\wolves.jpg"
+    },
+    {
+      "Id": "C:\\Users\\FLAVIN\\OneDrive\\Desktop\\Maillot Store Website\\MaillotStore\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\FLAVIN\\OneDrive\\Desktop\\Maillot Store Website\\MaillotStore\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.MaillotStore.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.MaillotStore.props",
+      "PackagePath": "build\\MaillotStore.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.MaillotStore.props",
+      "PackagePath": "buildMultiTargeting\\MaillotStore.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.MaillotStore.props",
+      "PackagePath": "buildTransitive\\MaillotStore.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
