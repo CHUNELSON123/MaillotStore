@@ -1,4 +1,6 @@
-﻿<div class="bg-black py-3" style="width: 100vw; position: relative; left: calc(49.7% - 50vw); margin-top: 60px; margin-top: 5px;">
+﻿@inject NavigationManager NavManager
+
+<div class="bg-black py-3" style="width: 100vw; position: relative; left: calc(49.7% - 50vw); margin-top: 60px; margin-top: 5px;">
 
     <div class="container">
         <form role="search" class="d-flex justify-content-center mx-auto" style="max-width: 600px; width: 40%;">
@@ -6,8 +8,20 @@
                 <span class="input-group-text" id="home-search-icon">
                     <i class="bi bi-search"></i>
                 </span>
-                <input class="form-control" type="search" placeholder="Search" aria-label="Search" aria-describedby="home-search-icon">
+                <input class="form-control" type="search" placeholder="Search" aria-label="Search" aria-describedby="home-search-icon" @bind-value="searchQuery" @onkeyup="HandleSearch" />
             </div>
         </form>
     </div>
 </div>
+
+@code {
+    private string? searchQuery;
+
+    private void HandleSearch(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            NavManager.NavigateTo($"/searchresults/{Uri.EscapeDataString(searchQuery)}");
+        }
+    }
+}

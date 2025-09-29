@@ -1,38 +1,63 @@
-﻿<nav class="navbar navbar-expand-lg fixed-top bg-black" style="min-height: 72px;">
-    <div class="container-fluid d-flex align-items-center">
+﻿<header>
+    <nav class="navbar navbar-expand-lg fixed-top bg-black" style="min-height: 72px;">
+        <div class="container-fluid d-flex align-items-center">
 
-        <a class="navbar-brand text-light d-flex align-items-center" href="/">
-            <img src="images/maillotstore-logo.jpeg" alt="Maillot Store Logo" height="50" width="50" class="me-2 rounded-circle border border-light border-1">
-            Maillot Store
-        </a>
+            <a class="navbar-brand text-light d-flex align-items-center" href="/">
+                <img src="images/maillotstore-logo.jpeg" alt="Maillot Store Logo" height="50" width="50" class="me-2 rounded-circle border border-light border-1">
+                Maillot Store
+            </a>
 
-        <button class="navbar-toggler mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <div class="collapse navbar-collapse d-none d-lg-flex" id="navbarNav">
+                <ul class="navbar-nav ms-auto flex-nowrap d-flex align-items-center">
+                    <li class="nav-item p-0">
+                        <a class="nav-link text-white" href="/">Home</a>
+                    </li>
+                    <li class="nav-item p-0">
+                        <a class="nav-link text-white" href="/shop">Shop</a>
+                    </li>
+                    <li class="nav-item p-0">
+                        <a class="nav-link text-white" href="/about">About</a>
+                    </li>
+                    <li class="nav-item p-0">
+                        <a class="nav-link text-white" href="/contact">Contact</a>
+                    </li>
+                    <li class="nav-item p-0">
+                        <a class="nav-link text-white" href="/checkout">Checkout</a>
+                    </li>
+                </ul>
+            </div>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="d-lg-none">
+                <button class="navbar-toggler mt-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-            <ul class="navbar-nav ms-auto flex-nowrap d-flex align-items-center">
+    <div class="offcanvas offcanvas-end bg-black text-white" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+            <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="navbar-nav flex-column">
                 <li class="nav-item p-0">
-                    <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link text-white" href="/" onclick="bootstrap.Offcanvas.getInstance('#offcanvasNavbar').hide()">Home</a>
                 </li>
                 <li class="nav-item p-0">
-                    <a class="nav-link" href="/shop">Shop</a>
+                    <a class="nav-link text-white" href="/shop" onclick="bootstrap.Offcanvas.getInstance('#offcanvasNavbar').hide()">Shop</a>
                 </li>
                 <li class="nav-item p-0">
-                    <a class="nav-link" href="/about">About</a>
+                    <a class="nav-link text-white" href="/about" onclick="bootstrap.Offcanvas.getInstance('#offcanvasNavbar').hide()">About</a>
                 </li>
                 <li class="nav-item p-0">
-                    <a class="nav-link" href="/contact">Contact</a>
+                    <a class="nav-link text-white" href="/contact" onclick="bootstrap.Offcanvas.getInstance('#offcanvasNavbar').hide()">Contact</a>
                 </li>
                 <li class="nav-item p-0">
-                    <a class="nav-link" href="/checkout">Checkout</a>
+                    <a class="nav-link text-white" href="/checkout" onclick="bootstrap.Offcanvas.getInstance('#offcanvasNavbar').hide()">Checkout</a>
                 </li>
             </ul>
         </div>
     </div>
-</nav>
-
-@code {
-    // Leave the @code block empty.
-}
+</header>
