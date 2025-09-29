@@ -1,0 +1,61 @@
+﻿@page "/commissions"
+@using MaillotStore.Components
+
+<div class="d-flex admin-dashboard-container">
+
+    <AdminSidebar />
+
+    <div class="main-content-dashboard flex-grow-1 p-5">
+        <h1 class="text-white fw-bold mb-5">Commission List</h1>
+
+        <h3 class="text-white fw-bold mb-4">Summary:</h3>
+        <div class="row mb-5 text-white">
+            <div class="col-md-4">
+                <p>Total Commission Earned (All Influencer): FCFA 67,500 XAF</p>
+            </div>
+            <div class="col-md-4">
+                <p>Total Paid: FCFA 7,500 XAF</p>
+            </div>
+            <div class="col-md-4">
+                <p>Balance Remaining: FCFA 6,000 XAF</p>
+            </div>
+        </div>
+
+        <table class="table table-bordered text-white admin-table">
+            <thead>
+                <tr>
+                    <th scope="col">S/N</th>
+                    <th scope="col">Date and Time</th>
+                    <th scope="col">Influencer</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Commission</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>19/09/2025 13:51</td>
+                    <td>Beh Chu</td>
+                    <td>Barca Jersey</td>
+                    <td>35,000</td>
+                    <td>5,000</td>
+                    <td>
+                        <button class="btn btn-sm btn-success">Mark as Paid</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <nav aria-label="Product page navigation" class="d-flex justify-content-center mt-5 mb-5">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

@@ -56,8 +56,6 @@ h1:focus {
     padding-top: 72px !important;
 }
  
-/* Custom CSS for Hero Banner - Step 1: Outer Container */
-
 /* Custom CSS for Hero Banner - Final Container Styling */
 
 .hero-banner-container {
@@ -67,13 +65,9 @@ h1:focus {
     min-height: 350px;
     position: relative;
     left: calc(49.7% - 50vw); /* Ensure it spans edge-to-edge */
-    /* CRITICAL: Image Background Properties */
-    /*background-image: url('../images/psg-jersey-bg.jpg');*/ /* REPLACE with your actual image path */
+     
     background-color: black; /* Fallback color remains black */
-    /*background-size: cover;*/ /* Ensures image fills the container */
-    /*background-position: center;*/ /* Centers the image */
-    /*background-repeat: no-repeat;*/
-    /* Positioning for the text block (to be added next - UNCOMMENTED) */
+    
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -93,7 +87,6 @@ h1:focus {
     justify-content: flex-start; /* CRITICAL CHANGE: Pushes content to the LEFT side */
     align-items: center; /* Centers content VERTICALLY (Correct) */
     padding-left: 20px; /* Add space between the image container edge and the text */
-
     margin: 15px;
     margin-top: 20px;
     border-radius: 10px;
@@ -104,9 +97,6 @@ h1:focus {
     padding: 30px;
     max-width: 600px;
     text-align: left;
-    /* Removed subtle background as it's not needed with dark text */
-    /* background-color: rgba(0, 0, 0, 0.2); */
-
     display: flex;
     flex-direction: column;
 }
@@ -289,3 +279,277 @@ h1:focus {
     background-color: black;
     margin-top: 1px;
 }
+
+/* Custom CSS for Shop Page Header */
+
+.shop-header-container {
+    background-color: black;
+    width: 100vw;
+    position: relative;
+    left: calc(49.6% - 50vw);
+}
+
+/* Custom CSS for Product Detail Page */
+
+.thumbnail-img {
+    width: 100%; /* Ensures the image fills its column */
+    height: 180px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease-in-out;
+}
+
+    .thumbnail-img:hover {
+        border-color: #007bff; /* Blue border on hover for visual feedback */
+    }
+
+/* Custom CSS for "You May Also Like..." Section */
+
+.you-may-also-like-container {
+    background-color: black;
+    color: white; /* Ensures text is white */
+
+    margin-top: 0px;
+}
+
+.you-may-also-like-container h3 {
+        color: white;
+    }
+
+/* Custom CSS for Product Detail Page */
+
+.product-main-container {
+    background-color: black;
+    color: white; /* Ensures all text inside is white by default */
+}
+
+    /* Ensure form elements and labels are styled correctly on a dark background */
+    .product-main-container label {
+        color: white;
+    }
+
+    .product-main-container .form-control,
+    .product-main-container .form-select {
+        background-color: black;
+        color: white;
+        border: 1px solid white;
+    }
+
+        .product-main-container .form-control::placeholder {
+            color: #ccc;
+        }
+
+.product-title,
+.product-season {
+    color: white !important;
+}
+
+/* Custom CSS for About Us Page */
+
+.about-section-container {
+    background-color: black;
+}
+
+.shop-button {
+    background-color: black;
+    border: 1px solid white;
+    color: white;
+}
+
+.quote-section {
+    padding-top: 50px;
+}
+
+.quote-text-primary {
+    color: white;
+    font-style: italic;
+    font-size: 1.5rem;
+    line-height: 1.5;
+}
+
+.quote-text-secondary {
+    color: #ccc;
+    font-size: 1rem;
+}
+
+.quote-section p {
+    color: white;
+}
+
+/* Custom CSS for Contact Us Page */
+
+.contact-section-container {
+    background-color: black;
+    color: white;
+}
+
+    .contact-section-container form .form-control,
+    .contact-section-container form .form-label,
+    .contact-section-container form .form-control::placeholder {
+        background-color: black;
+        color: white;
+ 
+    }
+
+
+.contact-submit-button {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+}
+
+/* Custom CSS for Checkout Page */
+
+/* This rule keeps the main section background black */
+.checkout-section-container {
+    background-color: black;
+    color: white;
+}
+
+/* This rule styles the table itself to be white */
+.checkout-table {
+    background-color: white;
+    border: 1px solid black;
+}
+
+    /* This rule styles the table headers and cells to have black text on a white background */
+    .checkout-table th,
+    .checkout-table td {
+        border: 1px solid black;
+        color: black;
+    }
+
+/* Ensures the heading "Your Order Summary" is white on the black background */
+.checkout-section-container h2 {
+     
+}
+
+/* This rule ensures the "Remove Item" text is visible on the white table background */
+.checkout-table .text-danger {
+    color: red !important;
+}
+
+.checkout-section-container .form-control {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+}
+
+    /* Styles the placeholder text for the input fields */
+    .checkout-section-container .form-control::placeholder {
+        color: #ccc;
+    }
+
+/* Custom CSS for Admin Dashboard */
+
+/* This makes the main container a Flexbox container and makes it take up the full height of the viewport */
+.admin-dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* This styles the sidebar with a fixed width, and black background */
+.sidebar {
+    width: 250px;
+    background-color: black;
+    position: fixed;
+    left: 0px;
+    height: 100vh;
+}
+
+/* This makes the main content area expand to fill the remaining space */
+.main-content-dashboard {
+    flex-grow: 1;
+    background-color: black;
+    color: white;
+    overflow-y: auto;
+    margin-left: 219px;
+}
+
+/* Styles the dashboard cards to match the design */
+.stat-card {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+}
+
+/* Custom CSS for Admin Pages */
+
+.admin-table {
+    background-color: white;
+    border: 1px solid black;
+}
+
+    .admin-table th,
+    .admin-table td {
+        border: 1px solid black;
+        color: black;
+    }
+
+.pagination .page-link {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+
+/* Custom CSS for Influencer Dashboard */
+
+.influencer-dashboard-container {
+    background-color: black;
+    color: white;
+}
+
+/* Custom CSS for Add Product Page */
+
+.main-content-dashboard .form-control,
+.main-content-dashboard .form-select {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+}
+
+/* Custom CSS for Sign Up Page */
+
+.signup-form-container {
+    background-color: black;
+    color: white;
+     
+}
+
+.signup-form {
+    border: 1px solid white;
+}
+
+    .signup-form .form-control,
+    .signup-form .form-select {
+        background-color: black;
+        color: white;
+        border: 1px solid white;
+    }
+
+        .signup-form .form-control::placeholder {
+            color: #ccc;
+        }
+
+/* Custom CSS for Login Page */
+
+.login-form-container {
+    background-color: black;
+    color: white;
+}
+
+.login-form-dark {
+    background-color: black;
+    border: 1px solid white;
+}
+
+    .login-form-dark .form-control {
+        background-color: black;
+        color: white;
+        border: 1px solid white;
+    }
+
+        .login-form-dark .form-control::placeholder {
+            color: #ccc;
+        }

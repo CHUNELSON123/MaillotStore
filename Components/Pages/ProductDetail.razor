@@ -1,0 +1,99 @@
+﻿@page "/product-detail"
+@using MaillotStore.Components
+@using MaillotStore.Components.Sections
+
+<div class="product-detail-page-container">
+
+    <HomePageSearchBar />
+
+    <div class="full-width-section product-main-container " style="margin-top: 0px;">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="/Images/atlectico.png" alt="Product Image" class="img-fluid rounded mb-3" />
+
+                    <div class="row">
+                        <div class="col-4 d-flex justify-content-center">
+                            <img src="/Images/atlectico.png" alt="Thumbnail 1" class="img-fluid rounded thumbnail-img" />
+                        </div>
+                        <div class="col-4 d-flex justify-content-center">
+                            <img src="/Images/wolves.jpg" alt="Thumbnail 2" class="img-fluid rounded thumbnail-img" />
+                        </div>
+                        <div class="col-4 d-flex justify-content-center">
+                            <img src="/Images/Liverpool.jpeg" alt="Thumbnail 3" class="img-fluid rounded thumbnail-img" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h1 class="product-title fw-bold mb-3">Atletico de madrid Home Jersey</h1>
+                    <p class="product-price fs-4 fw-bold mb-3">FCFA 15,000 XAF</p>
+                    <p class="product-season text-muted mb-4">HOME(2025/2026)</p>
+                    <p class="mb-5">
+                        Show your passion for Los Colchoneros with the official home jersey. Designed with breathable, lightweight fabric for all-day comfort, this jersey features Atletico's iconic red and white stripes, the club crest on the chest, and a modern athletic fit. Perfect for match days, training, or casual wear.
+                    </p>
+
+                    <h3 class="fw-bold mb-3">Customization Info</h3>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Player's Name (Optional)</label>
+                            <input type="text" class="form-control" placeholder="Player's Name" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Number (Optional)</label>
+                            <input type="text" class="form-control" placeholder="Number" />
+                        </div>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" class="form-control" value="1" min="1" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Select Size</label>
+                            <select class="form-select">
+                                <option>S</option>
+                                <option>M</option>
+                                <option>L</option>
+                                <option>XL</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-dark btn-lg">ADD TO CART</button>
+                        <button class="btn btn-primary btn-lg">ORDER NOW</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="full-width-section you-may-also-like-container">
+        <div class="container py-5">
+            <h2 class="text-start mb-5 text-white">You May Also Like ...</h2>
+            <div class="row">
+                <ProductCard ImageUrl="/Images/wolves.jpg"
+                             Title="Wolves Third player Jersey"
+                             Price="FCFA 12,000 XAF"
+                             Season="THIRD(2024/2025)" />
+                <ProductCard ImageUrl="/Images/Liverpool.jpeg"
+                             Title="Liverpool Home Kit"
+                             Price="FCFA 35,000 XAF"
+                             Season="HOME(2025/2026)" />
+                <ProductCard ImageUrl="/Images/PSG_Away_Jersey.jpg"
+                             Title="Paris Saint Germain Away Jersey"
+                             Price="FCFA 30,000 XAF"
+                             Season="AWAY(2025/2026)" />
+                <ProductCard ImageUrl="/Images/wolves.jpg"
+                             Title="Wolves Third player Jersey"
+                             Price="FCFA 12,000 XAF"
+                             Season="THIRD(2024/2025)" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<Footer />
+
+ 

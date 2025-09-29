@@ -1,7 +1,60 @@
 ﻿@page "/contact"
+@using MaillotStore.Components
+@using MaillotStore.Components.Sections
 
-<h3>Contact</h3>
+<div class="contact-page-container">
 
-@code {
+    <HomePageSearchBar />
 
-}
+    <div class="full-width-section contact-section-container"  style="margin-top: 0px;">
+        <div class="container py-5">
+            <h1 class="text-center fw-bold text-white mb-5">Get In Touch</h1>
+
+            <div class="row text-white">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <p class="fs-5 mb-4">
+                        Here at Maillot, we prioritize customer satisfaction which is why we have a support system that's available 24/7 to tend to all of your needs.
+                    </p>
+                    <p class="fw-bold mb-1">Phone Numbers:</p>
+                    <ul class="list-unstyled">
+                        <li><i class="bi bi-telephone-fill me-2"></i>+237 690 05 91-97</li>
+                        <li><i class="bi bi-whatsapp me-2"></i>+237 90059197</li>
+                    </ul>
+                    <p class="fw-bold mb-1">Email:</p>
+                    <p class="mb-1"><i class="bi bi-envelope-fill me-2"></i>maillotstore@gmail.com</p>
+                    <p class="fw-bold mb-1">Address:</p>
+                    <p class="mb-4"><i class="bi bi-geo-alt-fill me-2"></i>Douala, Cameroon</p>
+
+                    <h5 class="fw-bold">Social Links</h5>
+                    <div class="d-flex social-links">
+                        <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-tiktok fs-4"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-whatsapp fs-4"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-twitter-x fs-4"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h5 class="fw-bold mb-3">Send Us A Message</h5>
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" placeholder="Your Name" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-Mail</label>
+                            <input type="email" class="form-control" id="email" placeholder="Your E-Mail" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="5" placeholder="Your Message"></textarea>
+                        </div>
+                        <button type="submit" class="btn w-100 contact-submit-button">SUBMIT</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<Footer />

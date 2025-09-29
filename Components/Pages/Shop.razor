@@ -1,7 +1,155 @@
-﻿@page "/shop"
+﻿ @page "/shop"
+@using MaillotStore.Components
+@using MaillotStore.Components.Sections
 
-<h3>Shop</h3>
+<div class="shop-page-container">
 
-@code {
+    <HomePageSearchBar />
 
-}
+    <div class="container mt-5 pt-5">
+
+        <div class="full-width-section shop-header-container">
+            <div class="container d-flex justify-content-between align-items-center py-4">
+
+                <h2 class="text-white">All Products</h2>
+
+                <div class="d-flex">
+                    <div class="dropdown me-3">
+                        <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Sort by
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="#">Name (A-Z)</a></li>
+                            <li><a class="dropdown-item" href="#">Price (Low to High)</a></li>
+                            <li><a class="dropdown-item" href="#">Price (High to Low)</a></li>
+                        </ul>
+                    </div>
+
+                    <button class="btn btn-dark">Filter</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="full-width-section featured-jerseys-container" style="margin-top: 0px;">
+            <div class="container py-5">
+                <div class="row">
+                    <ProductCard ImageUrl="/Images/atlectico.png"
+                                 Title="Atletico Home Jersey"
+                                 Price="FCFA 15,000 XAF"
+                                 Season="HOME(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/wolves.jpg"
+                                 Title="Wolves Third Player Jersey"
+                                 Price="FCFA 12,000 XAF"
+                                 Season="THIRD(2024/2025)"/>
+
+                    <ProductCard ImageUrl="/Images/Liverpool.jpeg"
+                                 Title="Liverpool Home Kit"
+                                 Price="FCFA 35,000 XAF"
+                                 Season="HOME(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/PSG_Away_Jersey.jpg"
+                                 Title="PSG Away Jersey"
+                                 Price="FCFA 30,000 XAF"
+                                 Season="AWAY(2025/2026)" />
+                                 
+                    <ProductCard ImageUrl="/Images/PSG_Away_Jersey.jpg"
+                                 Title="PSG Away Jersey"
+                                 Price="FCFA 30,000 XAF"
+                                 Season="AWAY(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/Liverpool.jpeg"
+                                 Title="Liverpool Home Kit"
+                                 Price="FCFA 35,000 XAF"
+                                 Season="HOME(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/atlectico.png"
+                                 Title="Atletico Home Jersey"
+                                 Price="FCFA 15,000 XAF"
+                                 Season="HOME(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/wolves.jpg"
+                                 Title="Wolves Third Player Jersey"
+                                 Price="FCFA 12,000 XAF"
+                                 Season="THIRD(2024/2025)" />
+
+                    <ProductCard ImageUrl="/Images/Liverpool.jpeg"
+                                 Title="Liverpool Home Kit"
+                                 Price="FCFA 35,000 XAF"
+                                 Season="HOME(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/PSG_Away_Jersey.jpg"
+                                 Title="PSG Away Jersey"
+                                 Price="FCFA 30,000 XAF"
+                                 Season="AWAY(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/PSG_Away_Jersey.jpg"
+                                 Title="PSG Away Jersey"
+                                 Price="FCFA 30,000 XAF"
+                                 Season="AWAY(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/Liverpool.jpeg"
+                                 Title="Liverpool Home Kit"
+                                 Price="FCFA 35,000 XAF"
+                                 Season="HOME(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/Liverpool.jpeg"
+                                 Title="Liverpool Home Kit"
+                                 Price="FCFA 35,000 XAF"
+                                 Season="HOME(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/PSG_Away_Jersey.jpg"
+                                 Title="PSG Away Jersey"
+                                 Price="FCFA 30,000 XAF"
+                                 Season="AWAY(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/PSG_Away_Jersey.jpg"
+                                 Title="PSG Away Jersey"
+                                 Price="FCFA 30,000 XAF"
+                                 Season="AWAY(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/Liverpool.jpeg"
+                                 Title="Liverpool Home Kit"
+                                 Price="FCFA 35,000 XAF"
+                                 Season="HOME(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/Liverpool.jpeg"
+                                 Title="Liverpool Home Kit"
+                                 Price="FCFA 35,000 XAF"
+                                 Season="HOME(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/PSG_Away_Jersey.jpg"
+                                 Title="PSG Away Jersey"
+                                 Price="FCFA 30,000 XAF"
+                                 Season="AWAY(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/PSG_Away_Jersey.jpg"
+                                 Title="PSG Away Jersey"
+                                 Price="FCFA 30,000 XAF"
+                                 Season="AWAY(2025/2026)" />
+
+                    <ProductCard ImageUrl="/Images/Liverpool.jpeg"
+                                 Title="Liverpool Home Kit"
+                                 Price="FCFA 35,000 XAF"
+                                 Season="HOME(2025/2026)" />
+                </div>
+
+
+                <nav aria-label="Product page navigation" class="d-flex justify-content-center mt-5 mb-5">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<Footer />

@@ -1,0 +1,68 @@
+﻿@page "/influencer-dashboard"
+@using MaillotStore.Components
+@using MaillotStore.Components.Sections
+
+<div class="influencer-dashboard-page-container">
+
+    <HomePageSearchBar />
+
+    <div class="full-width-section influencer-dashboard-container">
+        <div class="container py-5">
+            <h1 class="text-white fw-bold mb-5">WELCOME, Beh Chu</h1>
+
+            <h3 class="text-white fw-bold">Referral Code: <span class="fw-normal">BEHCHU123</span></h3>
+            <h3 class="text-white fw-bold mb-3">Referral Link: <span class="fw-normal">https://maillotstore.com/?ref=BEHCHU123</span></h3>
+            <a href="#" class="text-info">Copy Link</a>
+            <h5 class="text-white fw-bold mt-4 mb-3">Share Link Via</h5>
+            <div class="d-flex social-links mb-5">
+                <a href="#" class="text-white me-3"><i class="bi bi-whatsapp fs-4"></i></a>
+                <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
+            </div>
+            <h2 class="text-white fw-bold mb-4">Your Sales via Referral Link</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered text-white admin-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Date and Time</th>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Product</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Commission</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>19/09/2025 13:51</td>
+                            <td>CHU NELSON</td>
+                            <td>Barca Jersey</td>
+                            <td>35,000</td>
+                            <td>5,000</td>
+                            <td>Paid</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2 class="text-white fw-bold mt-5 mb-4">Your Performance</h2>
+            <div class="row mb-5 text-white">
+                <div class="col-md-3">
+                    <p>Total Sale: 12</p>
+                </div>
+                <div class="col-md-3">
+                    <p>Commission Earned: 7,500</p>
+                </div>
+                <div class="col-md-3">
+                    <p>Commission Paid: 5,500</p>
+                </div>
+                <div class="col-md-3">
+                    <p>Balance Remaining: 2,000</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <Footer />
+</div>

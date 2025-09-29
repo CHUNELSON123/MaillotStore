@@ -1,7 +1,58 @@
 ﻿@page "/about"
+@using MaillotStore.Components
+@using MaillotStore.Components.Sections
 
-<h3>About</h3>
+<div class="about-page-container">
 
-@code {
+    <HomePageSearchBar />
 
-}
+    <section class="full-width-section about-section-container">
+        <div class="container py-5">
+            <header class="text-center mb-5">
+                <h1 class="fw-bold text-white">About The 'Maillot' Store</h1>
+                <p class="text-white">
+                    Maillot Store-Your premier destination for authentic jerseys.
+                </p>
+            </header>
+
+            <div class="row text-white">
+                <div class="col-md-12">
+                    <p class="mb-4">
+                        We are passionate about connecting football fans with the jerseys they love. At Maillot Store, we provide high-quality, affordable, and original football jerseys from top clubs and national teams worldwide. Our mission is simple: make it easy for every fan to proudly wear their team's colors, whether you're cheering from the stadium, watching at home, or rocking your jersey casually, we've got you covered.
+                    </p>
+                    <p class="fw-bold fs-5 mt-5">Our Core Values:</p>
+                    <ul class="list-unstyled">
+                        <li>1. Authentic Quality - Only genuine jerseys, no compromises.</li>
+                        <li>2. Affordable Prices - Jerseys for every budget.</li>
+                        <li>3. Fast Delivery - Get your favorite jersey delivered anywhere in Cameroon.</li>
+                    </ul>
+
+                    <p class="mt-5 mb-4">
+                        We also go beyond sales by offering an Influencer Program, giving football lovers the chance to earn rewards while promoting their passion. This program allows influencers to sign up, receive a unique referral link, and earn commissions for every jersey sold through their network. It's our way of growing the football community together, while rewarding those who share our love for the game.
+                    </p>
+                    <p>
+                        At Maillot Store, we see ourselves not just as a shop, but as part of the football lifestyle. Every jersey we deliver carries a story of loyalty, pride, and unforgettable moments on the pitch. That's why we work hard to combine quality products, reliable service, and a strong community of fans and influencers.
+                    </p>
+
+                    <h5 class="fw-bold text-center mt-5">Maillot Store-Wear your passion. Support your team. Live the game.</h5>
+
+                    <div class="text-center mt-5 mb-5">
+                        <a href="/shop" class="btn btn-lg btn-dark shop-button">Shop Our Store</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h3 class="quote-text-primary">
+                        "Football is not just a game, it's the jersey you wear, the pride you carry, and the passion you live."
+                    </h3>
+                    <p class="text-white mt-3">Maillot Store Team</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+
+<Footer />

@@ -1,0 +1,68 @@
+﻿@page "/view-influencer"
+@using MaillotStore.Components
+
+<div class="d-flex admin-dashboard-container">
+
+    <AdminSidebar />
+
+    <div class="main-content-dashboard flex-grow-1 p-5">
+        <h1 class="text-white fw-bold mb-5">Influencer Details - Annie</h1>
+        
+        <h2 class="text-white fw-bold">Personal Info:</h2>
+        <h5 class="text-white fw-normal mt-3">Name: <span class="fw-bold">Annie</span></h5>
+        <h5 class="text-white fw-normal">Phone: <span class="fw-bold">67x xxx xxx</span></h5>
+        <h5 class="text-white fw-normal">Email: <span class="fw-bold">annie@gmail.com</span></h5>
+        <h5 class="text-white fw-normal">Referral Code: <span class="fw-bold">ANNIE123</span></h5>
+        <h5 class="text-white fw-normal mb-5">Joined: <span class="fw-bold">20/09/2025</span></h5>
+        
+        <h2 class="text-white fw-bold">Performance:</h2>
+        <div class="row mb-5 text-white">
+            <div class="col-md-3">
+                <p>Total Sales</p>
+                <p class="fs-4 fw-bold">5</p>
+            </div>
+            <div class="col-md-3">
+                <p>Commission Earned</p>
+                <p class="fs-4 fw-bold">FCFA 7,500</p>
+            </div>
+            <div class="col-md-3">
+                <p>Commission Paid</p>
+                <p class="fs-4 fw-bold">FCFA 5,500</p>
+            </div>
+            <div class="col-md-3">
+                <p>Balance Remaining</p>
+                <p class="fs-4 fw-bold">FCFA 2,000</p>
+            </div>
+        </div>
+
+        <h2 class="text-white fw-bold mb-4">Sales via Referrals:</h2>
+        <table class="table table-bordered text-white admin-table">
+            <thead>
+                <tr>
+                    <th scope="col">S/N</th>
+                    <th scope="col">Date and Time</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Commission</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>22/09/25 02:00</td>
+                    <td>Barca Jersey</td>
+                    <td>2</td>
+                    <td>35,000 XAF</td>
+                    <td>8,000 XAF</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-end mt-4">
+            <a href="#" class="btn btn-dark">Back</a>
+        </div>
+        
+    </div>
+
+</div>
