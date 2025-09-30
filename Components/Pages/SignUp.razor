@@ -1,11 +1,17 @@
 ﻿@page "/signup"
 @using MaillotStore.Components
 @using MaillotStore.Components.Sections
+@using MaillotStore.Models.ViewModels
+@using MaillotStore.Data
+@using Microsoft.AspNetCore.Identity
+@using MaillotStore.Models
+@using Microsoft.EntityFrameworkCore
+@inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager NavigationManager
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
 
 <div class="signup-page-container">
-
     <HomePageSearchBar />
-
     <div class="full-width-section signup-form-container">
         <div class="container py-5">
             <div class="row justify-content-center">
@@ -15,38 +21,55 @@
                             <h2 class="text-white fw-bold">BECOME AN INFLUENCER</h2>
                             <p class="text-white">Earn money promoting our jerseys!</p>
                         </div>
-                        <form class="text-white">
+
+                        <EditForm Model="@_model" OnValidSubmit="HandleSignUp" class="text-white">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary class="text-danger" />
+
+                            @* FIX: Added a prominent alert for specific error messages *@
+                            @if (!string.IsNullOrEmpty(_errorMessage))
+                            {
+                                <div class="alert alert-danger" role="alert">
+                                    @_errorMessage
+                                </div>
+                            }
+
                             <div class="mb-3">
                                 <label for="fullName" class="form-label">Full Name:</label>
-                                <input type="text" class="form-control" id="fullName" placeholder="Full Name">
+                                <InputText id="fullName" @bind-Value="_model.FullName" class="form-control" placeholder="Full Name" />
                             </div>
                             <div class="mb-3">
                                 <label for="phoneNumber" class="form-label">Phone Number:</label>
-                                <input type="tel" class="form-control" id="phoneNumber" placeholder="6 71 00 73 13">
+                                <InputText id="phoneNumber" @bind-Value="_model.PhoneNumber" class="form-control" placeholder="6 71 00 73 13" />
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email:</label>
-                                <input type="email" class="form-control" id="email" placeholder="maillotstore@gmail.com">
+                                <InputText id="email" @bind-Value="_model.Email" class="form-control" placeholder="maillotstore@gmail.com" />
                             </div>
+
                             <div class="mb-3">
-                                <label for="socialMedia" class="form-label">Social Media:</label>
-                                <select class="form-select" id="socialMedia">
-                                    <option>Instagram</option>
-                                    <option>TikTok</option>
-                                    <option>WhatsApp</option>
-                                    <option>Twitter</option>
-                                </select>
+                                <label class="form-label">Social Media:</label>
+                                <div class="d-flex justify-content-around">
+                                    @foreach (var platform in _model.SocialMedia.Keys)
+                                    {
+                                        <div class="form-check form-check-inline">
+                                            <InputCheckbox @bind-Value="_model.SocialMedia[platform]" id="@($"social-{platform}")" class="form-check-input" />
+                                            <label class="form-check-label" for="@($"social-{platform}")">@platform</label>
+                                        </div>
+                                    }
+                                </div>
                             </div>
+
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password:</label>
-                                <input type="password" class="form-control" id="password" placeholder="********">
+                                <InputText id="password" @bind-Value="_model.Password" type="password" class="form-control" placeholder="********" />
                             </div>
                             <div class="mb-3">
                                 <label for="confirmPassword" class="form-label">Confirm Password:</label>
-                                <input type="password" class="form-control" id="confirmPassword" placeholder="********">
+                                <InputText id="confirmPassword" @bind-Value="_model.ConfirmPassword" type="password" class="form-control" placeholder="********" />
                             </div>
                             <div class="form-check mb-4">
-                                <input class="form-check-input" type="checkbox" id="termsAndConditions">
+                                <InputCheckbox id="termsAndConditions" @bind-Value="_model.TermsAndConditions" class="form-check-input" />
                                 <label class="form-check-label" for="termsAndConditions">
                                     I agree to Terms and Conditions
                                 </label>
@@ -57,12 +80,58 @@
                             <div class="text-center">
                                 <p>Already have an account? <a href="/login">Login</a></p>
                             </div>
-                        </form>
+                        </EditForm>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <Footer />
 </div>
+
+@code {
+    private readonly InfluencerSignUpModel _model = new();
+    private string _errorMessage;
+
+    private async Task HandleSignUp()
+    {
+        _errorMessage = ""; // Clear previous errors
+        var user = new ApplicationUser { UserName = _model.Email, Email = _model.Email, EmailConfirmed = true };
+        var result = await UserManager.CreateAsync(user, _model.Password);
+
+        if (result.Succeeded)
+        {
+            await UserManager.AddToRoleAsync(user, "Influencer");
+
+            var selectedPlatforms = _model.SocialMedia
+                                          .Where(kvp => kvp.Value)
+                                          .Select(kvp => kvp.Key);
+            var socialMediaString = string.Join(", ", selectedPlatforms);
+
+            await using var dbContext = DbFactory.CreateDbContext();
+
+            var influencer = new Influencer
+            {
+                Name = _model.FullName,
+                PhoneNumber = _model.PhoneNumber,
+                Email = _model.Email,
+                ReferralCode = Guid.NewGuid().ToString().Substring(0, 8).ToUpper(),
+                SocialMediaPlatforms = socialMediaString,
+                CommissionEarned = 0,
+                CommissionPaid = 0,
+                JoinedDate = DateTime.UtcNow,
+                Commissions = new List<Commission>()
+            };
+
+            dbContext.Influencers.Add(influencer);
+            await dbContext.SaveChangesAsync();
+
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            // This will now be displayed in the red alert box
+            _errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+        }
+    }
+}

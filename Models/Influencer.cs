@@ -30,6 +30,8 @@ namespace MaillotStore.Models
 
         public DateTime JoinedDate { get; set; }
 
+        public string? SocialMediaPlatforms { get; set; }
+
         public required ICollection<Commission> Commissions { get; set; }
     }
 }

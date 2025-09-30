@@ -1,112 +1,295 @@
 ﻿@page "/checkout"
 @using MaillotStore.Components
 @using MaillotStore.Components.Sections
-
+@using MaillotStore.Data
+@using MaillotStore.Models
+@using MaillotStore.Models.ViewModels
+@using MaillotStore.Services
+@using System.Text
+@using Microsoft.EntityFrameworkCore
+@implements IDisposable
+ 
 <div class="checkout-page-container">
-
     <HomePageSearchBar />
-
     <div class="full-width-section checkout-section-container" style="margin-top: 0px;">
         <div class="container py-5">
             <h1 class="text-white fw-bold text-center mb-5">Check Out</h1>
-
             <div class="row">
                 <div class="col-md-6 mb-5 mb-md-0">
-                    <h2 class="fw-bold mb-3">Your Order Summary</h2>
-                    <table class="table table-bordered text-white checkout-table">
-                        <thead>
-                            <tr>
-                                <th scope="col" style="width: 60%;">Product</th>
-                                <th scope="col" style="width: 20%;">Quantity</th>
-                                <th scope="col" style="width: 20%;">Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="/Images/atlectico.png" alt="Atletico Jersey" style="width: 50px; height: 50px; object-fit: cover;" class="me-3" />
-                                        <div>
-                                            <p class="mb-0 fw-bold">Atletico de madrid Home Jersey</p>
-                                            <p class="mb-0 text-muted">(2025/2026) - RED & WHITE STRIPES</p>
-                                            <p class="mb-0">Size: S</p>
-                                          
-                                        </div>
-                                        <a href="#" class="text-danger ms-3 text-decoration-none">Remove</a>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-dash"></i>
-                                        <span class="mx-2">2</span>
-                                        <i class="bi bi-plus"></i>
-                                        
-                                    </div>
-                                </td>
-                                <td class="fw-bold">FCFA 15,000 XAF</td>
-                            </tr>
+                    <h2 class="fw-bold mb-3 text-white">Your Order Summary</h2>
+                    @if (_cartItems == null || !_cartItems.Any())
+                    {
+                        <p class="text-white">Your cart is currently empty.</p>
+                    }
+                    else
+                    {
+                        <table class="table table-bordered text-white checkout-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 60%;">Product</th>
+                                    <th scope="col" style="width: 20%;">Quantity</th>
+                                    <th scope="col" style="width: 20%;">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in _cartItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="@item.Product.ImageUrl" alt="@item.Product.Name" style="width: 50px; height: 50px; object-fit: cover;" class="me-3" />
+                                                <div>
+                                                    <p class="mb-0 fw-bold">@item.Product.Name</p>
+                                                    <p class="mb-0 text-muted">@item.Product.Season</p>
 
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="/Images/atlectico.png" alt="Atletico Jersey" style="width: 50px; height: 50px; object-fit: cover;" class="me-3" />
-                                        <div>
-                                            <p class="mb-0 fw-bold">Atletico de madrid Home Jersey</p>
-                                            <p class="mb-0 text-muted">(2025/2026) - RED & WHITE STRIPES</p>
-                                            <p class="mb-0">Size: S</p>
-                                           
-                                        </div>
-                                        <a href="#" class="text-danger ms-3 text-decoration-none">Remove</a>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-dash"></i>
-                                        <span class="mx-2">1</span>
-                                        <i class="bi bi-plus"></i>
-                                         
-                                    </div>
-                                </td>
-                                <td class="fw-bold">FCFA 30,000 XAF</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <h4 class="fw-bold text-end mt-4">SUBTOTAL: FCFA 60,000 XAF</h4>
+                                                    @* ADDED: The new size dropdown *@
+                                                    <div class="d-flex align-items-center mt-1">
+                                                        <label for="size-@item.Product.Id" class="me-2 small">Size:</label>
+                                                        <select id="size-@item.Product.Id" @bind="item.Size" class="form-select form-select-sm" style="width: 70px;">
+                                                            <option>S</option>
+                                                            <option>M</option>
+                                                            <option>L</option>
+                                                            <option>XL</option>
+                                                        </select>
+                                                    </div>
+
+                                                    @if (!string.IsNullOrEmpty(item.PlayerName) || !string.IsNullOrEmpty(item.PlayerNumber))
+                                                    {
+                                                        <p class="mb-0 small mt-1">Custom: @item.PlayerName @item.PlayerNumber</p>
+                                                    }
+                                                </div>
+                                                <a href="#" @onclick="() => RemoveItem(item)" @onclick:preventDefault class="text-danger ms-auto text-decoration-none">Remove</a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <button class="btn btn-sm btn-light" @onclick="() => UpdateQuantity(item, -1)">-</button>
+                                                <span class="mx-2">@item.Quantity</span>
+                                                <button class="btn btn-sm btn-light" @onclick="() => UpdateQuantity(item, 1)">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="fw-bold">FCFA @item.Subtotal.ToString("N0") XAF</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <h4 class="fw-bold text-white text-end mt-4">SUBTOTAL: FCFA @_totalPrice.ToString("N0") XAF</h4>
+                    }
                 </div>
-
-                <div class="col-md-6">
+                <div class="col-md-6 text-white">
                     <h2 class="fw-bold mb-3">Customer Details</h2>
-                    <form>
+                    @* BIND THE FORM TO THE NEW MODEL *@
+                    <EditForm Model="@_customerDetails" FormName="customerDetails">
+                        <DataAnnotationsValidator />
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="name" />
+                            <InputText @bind-Value="_customerDetails.Name" class="form-control" id="name" />
+                            <ValidationMessage For="@(() => _customerDetails.Name)" />
                         </div>
                         <div class="mb-3">
                             <label for="phone" class="form-label">Phone Number</label>
-                            <input type="text" class="form-control" id="phone" />
+                            <InputText @bind-Value="_customerDetails.Phone" class="form-control" id="phone" />
+                            <ValidationMessage For="@(() => _customerDetails.Phone)" />
                         </div>
                         <div class="mb-3">
                             <label for="address" class="form-label">Delivery Address</label>
-                            <input type="text" class="form-control" id="address" />
+                            <InputText @bind-Value="_customerDetails.Address" class="form-control" id="address" />
+                            <ValidationMessage For="@(() => _customerDetails.Address)" />
                         </div>
                         <div class="mb-3">
                             <label for="message" class="form-label">Optional Message</label>
-                            <textarea class="form-control" id="message" rows="3"></textarea>
+                            <InputTextArea @bind-Value="_customerDetails.Message" class="form-control" id="message" rows="3" />
                         </div>
-                      
-                    </form>
+                    </EditForm>
                 </div>
             </div>
-
             <div class="d-flex justify-content-center mt-5">
-                <a href="https://wa.me/?text=I%20want%20to%20place%20an%20order" class="btn btn-lg btn-dark whatsapp-button">
-                    Check Out Via WhatsApp
-                </a>
+                @if (_isPlacingOrder)
+                {
+                    <button class="btn btn-lg btn-dark whatsapp-button" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Placing Order...
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-lg btn-dark whatsapp-button" @onclick="PlaceOrder">
+                        Check Out Via WhatsApp
+                    </button>
+                }
             </div>
-
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <div class="alert alert-danger mt-3 text-center">@_errorMessage</div>
+            }
         </div>
     </div>
-
 </div>
 
 <Footer />
+
+@code {
+    private IReadOnlyList<OrderItem> _cartItems;
+    private decimal _totalPrice = 0;
+    private CustomerDetailsViewModel _customerDetails = new();
+    private bool _isPlacingOrder = false;
+    private string _errorMessage;
+
+    [Inject] private IDbContextFactory<ApplicationDbContext> DbFactory { get; set; }
+    [Inject] private IJSRuntime JSRuntime { get; set; }
+    [Inject] private CartService CartService { get; set; }
+
+    protected override void OnInitialized()
+    {
+        CartService.OnCartChanged += UpdateCart;
+        LoadCart();
+    }
+
+    private void LoadCart()
+    {
+        _cartItems = CartService.GetCartItems();
+        _totalPrice = _cartItems.Sum(item => item.Subtotal);
+        StateHasChanged();
+    }
+
+    private void UpdateCart() => LoadCart();
+    private void UpdateQuantity(OrderItem item, int amount) => CartService.UpdateQuantity(item, amount);
+    private void RemoveItem(OrderItem item) => CartService.RemoveFromCart(item);
+
+    private async Task PlaceOrder()
+    {
+        _errorMessage = "";
+        if (string.IsNullOrWhiteSpace(_customerDetails.Name) ||
+            string.IsNullOrWhiteSpace(_customerDetails.Phone) ||
+            string.IsNullOrWhiteSpace(_customerDetails.Address))
+        {
+            _errorMessage = "Please fill in all required customer details.";
+            return;
+        }
+
+        if (!_cartItems.Any())
+        {
+            _errorMessage = "Your cart is empty.";
+            return;
+        }
+
+        _isPlacingOrder = true;
+
+        Order savedOrder = null;
+
+        try
+        {
+            await using var dbContext = DbFactory.CreateDbContext();
+            var newOrder = new Order
+            {
+                CustomerName = _customerDetails.Name,
+                PhoneNumber = _customerDetails.Phone,
+                DeliveryAddress = _customerDetails.Address,
+                OptionalMessage = _customerDetails.Message ?? string.Empty,
+                OrderDate = DateTime.Now,
+                TotalPrice = _totalPrice,
+                Status = "Pending",
+                OrderItems = _cartItems.Select(item => new OrderItem
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    Subtotal = item.Subtotal,
+                    PlayerName = item.PlayerName ?? string.Empty,
+                    PlayerNumber = item.PlayerNumber ?? string.Empty,
+                    Size = item.Size // Ensure size is saved
+                }).ToList()
+            };
+            dbContext.Orders.Add(newOrder);
+            await dbContext.SaveChangesAsync();
+
+            savedOrder = await dbContext.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .FirstOrDefaultAsync(o => o.Id == newOrder.Id);
+
+            if (savedOrder == null)
+            {
+                throw new Exception("Failed to retrieve the saved order.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = "There was an error saving your order. Please try again.";
+            if (ex.InnerException != null) _errorMessage += " " + ex.InnerException.Message;
+            _isPlacingOrder = false;
+            return;
+        }
+
+        try
+        {
+            var phoneNumber = "237671007313";
+            var orderMessage = new StringBuilder();
+            orderMessage.AppendLine("👋 Hello Maillot Store,");
+            orderMessage.AppendLine();
+            orderMessage.AppendLine($"An order has been placed with the following details (Order ID: {savedOrder.Id}):");
+            orderMessage.AppendLine();
+            orderMessage.AppendLine($"👤 Name: {savedOrder.CustomerName}");
+            orderMessage.AppendLine($"📞 Phone: {savedOrder.PhoneNumber}");
+            orderMessage.AppendLine($"📍 Address: {savedOrder.DeliveryAddress}");
+
+            // Conditionally add the optional message
+            if (!string.IsNullOrWhiteSpace(savedOrder.OptionalMessage))
+            {
+                orderMessage.AppendLine($"💬 Message: {savedOrder.OptionalMessage}");
+            }
+
+            orderMessage.AppendLine();
+            orderMessage.AppendLine("🛒 Order Details:");
+            int itemNumber = 1;
+
+            foreach (var item in savedOrder.OrderItems)
+            {
+                // Build the product line with all details
+                var productLine = new StringBuilder();
+                productLine.Append($"{itemNumber}. {item.Product.Name} (x{item.Quantity})");
+
+                // Always add Size
+                productLine.Append($" - Size: {item.Size}");
+
+                // Conditionally add Player Name
+                if (!string.IsNullOrWhiteSpace(item.PlayerName))
+                {
+                    productLine.Append($" - Name: {item.PlayerName}");
+                }
+
+                // Conditionally add Player Number
+                if (!string.IsNullOrWhiteSpace(item.PlayerNumber))
+                {
+                    productLine.Append($" - Number: {item.PlayerNumber}");
+                }
+
+                productLine.Append($" – FCFA {item.Subtotal:N0} XAF");
+                orderMessage.AppendLine(productLine.ToString());
+                itemNumber++;
+            }
+
+            orderMessage.AppendLine();
+            orderMessage.AppendLine($"💰 Total: FCFA {savedOrder.TotalPrice:N0} XAF");
+            orderMessage.AppendLine();
+            orderMessage.AppendLine("Thank you.");
+
+            var whatsappUrl = $"https://wa.me/{phoneNumber}?text={Uri.EscapeDataString(orderMessage.ToString())}";
+            await JSRuntime.InvokeVoidAsync("open", whatsappUrl, "_blank");
+
+            CartService.ClearCart();
+        }
+        catch (Exception)
+        {
+            _errorMessage = "Your order was saved, but we couldn't open WhatsApp. Please contact us with your order details.";
+        }
+        finally
+        {
+            _isPlacingOrder = false;
+        }
+    }
+
+    public void Dispose()
+    {
+        CartService.OnCartChanged -= UpdateCart;
+    }
+}

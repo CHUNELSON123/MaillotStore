@@ -1,13 +1,14 @@
-﻿ @page "/orders"
+﻿@page "/admin/orders"
 @using MaillotStore.Components
+@using MaillotStore.Data
+@using MaillotStore.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
 
 <div class="d-flex admin-dashboard-container">
-
     <AdminSidebar />
-
     <div class="main-content-dashboard flex-grow-1 p-5" style="margin-top: 0px;">
         <h1 class="text-white fw-bold mb-5">Order List</h1>
-
         <table class="table table-bordered text-white admin-table">
             <thead>
                 <tr>
@@ -19,18 +20,28 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>CHU NELSON</td>
-                    <td>2</td>
-                    <td>FCFA 30,000</td>
-                    <td>
-                        <button class="btn btn-sm btn-info">View</button>
-                    </td>
-                </tr>
+                @if (_orders == null)
+                {
+                    <tr><td colspan="5"><em>Loading orders...</em></td></tr>
+                }
+                else
+                {
+                    var serialNumber = 1;
+                    @foreach (var order in _orders)
+                    {
+                        <tr>
+                            <th scope="row">@(serialNumber++)</th>
+                            <td>@order.CustomerName</td>
+                            <td>@order.OrderItems.Count</td>
+                            <td>FCFA @order.TotalPrice.ToString("N0") XAF</td>
+                            <td>
+                                <a href="/admin/view-order/@order.Id" class="btn btn-sm btn-info">View</a>
+                            </td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
-        
         <nav aria-label="Order page navigation" class="d-flex justify-content-center mt-5 mb-5">
             <ul class="pagination">
                 <li class="page-item"><a class="page-link" href="#">Previous</a></li>
@@ -41,5 +52,17 @@
             </ul>
         </nav>
     </div>
-
 </div>
+
+@code {
+    private List<Order> _orders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load orders and include the OrderItems collection to get the count
+        _orders = await DbContext.Orders
+                                 .Include(o => o.OrderItems)
+                                 .OrderByDescending(o => o.OrderDate)
+                                 .ToListAsync();
+    }
+}

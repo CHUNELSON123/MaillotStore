@@ -1,45 +1,79 @@
-﻿@page "/view-order"
+﻿@page "/admin/view-order/{OrderId:int}"
 @using MaillotStore.Components
+@using MaillotStore.Data
+@using MaillotStore.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@inject NavigationManager NavigationManager
 
 <div class="d-flex admin-dashboard-container">
-
     <AdminSidebar />
-
     <div class="main-content-dashboard flex-grow-1 p-5">
-
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="text-white fw-bold">Order Details</h1>
-            <button class="btn btn-dark">Back</button>
-        </div>
-
-        <h2 class="text-white fw-bold">Customer Info:</h2>
-        <h5 class="text-white fw-normal mt-3">Name: <span class="fw-bold">Annie</span></h5>
-        <h5 class="text-white fw-normal">Phone: <span class="fw-bold">67x xxx xxx</span></h5>
-        <h5 class="text-white fw-normal mb-5">Order Date: <span class="fw-bold">20/09/2025</span></h5>
-
-        <h2 class="text-white fw-bold">Order Info:</h2>
-        <table class="table table-bordered text-white admin-table">
-            <thead>
-                <tr>
-                    <th scope="col">S/N</th>
-                    <th scope="col">Product</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Barca Jersey</td>
-                    <td>2</td>
-                    <td>35,000 XAF</td>
-                    <td>70,000 XAF</td>
-                </tr>
-            </tbody>
-        </table>
-
-        <h3 class="text-white fw-bold text-end mt-4">Total: <span class="fw-normal">70,000 XAF</span></h3>
-
+        @if (_order == null)
+        {
+            <p class="text-white"><em>Loading order details...</em></p>
+        }
+        else
+        {
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="text-white fw-bold">Order Details</h1>
+                <button class="btn btn-dark" @onclick="GoBack">Back</button>
+            </div>
+            <h2 class="text-white fw-bold">Customer Info:</h2>
+            <h5 class="text-white fw-normal mt-3">Name: <span class="fw-bold">@_order.CustomerName</span></h5>
+            <h5 class="text-white fw-normal">Phone: <span class="fw-bold">@_order.PhoneNumber</span></h5>
+            <h5 class="text-white fw-normal mb-5">Order Date: <span class="fw-bold">@_order.OrderDate.ToString("dd/MM/yyyy")</span></h5>
+            <h2 class="text-white fw-bold">Order Info:</h2>
+            <table class="table table-bordered text-white admin-table">
+                <thead>
+                    <tr>
+                        <th scope="col">S/N</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var serialNumber = 1;
+                    }
+                    @foreach (var item in _order.OrderItems)
+                    {
+                        <tr>
+                            <th scope="row">@(serialNumber++)</th>
+                            <td>@item.Product.Name</td>
+                            <td>@item.Quantity</td>
+                            @* This is the first corrected line *@
+                            <td>FCFA @((item.Subtotal / item.Quantity).ToString("N0")) XAF</td>
+                            @* This is the second corrected line *@
+                            <td>FCFA @(item.Subtotal.ToString("N0")) XAF</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <h3 class="text-white fw-bold text-end mt-4">Total: <span class="fw-normal">FCFA @_order.TotalPrice.ToString("N0") XAF</span></h3>
+        }
     </div>
 </div>
+
+@code {
+    [Parameter]
+    public int OrderId { get; set; }
+
+    private Order _order;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load the specific order, including its items and the product details for each item
+        _order = await DbContext.Orders
+                                .Include(o => o.OrderItems)
+                                    .ThenInclude(oi => oi.Product)
+                                .FirstOrDefaultAsync(o => o.Id == OrderId);
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/admin/orders");
+    }
+}

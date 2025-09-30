@@ -1,5 +1,9 @@
-﻿@page "/influencers"
+﻿@page "/admin/influencers"
 @using MaillotStore.Components
+@using MaillotStore.Data
+@using MaillotStore.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
 
 <div class="d-flex admin-dashboard-container">
 
@@ -20,16 +24,27 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>CHU NELSON</td>
-                    <td>671 00 73 13</td>
-                    <td>5</td>
-                    <td></td>
-                    <td>
-                        <button class="btn btn-sm btn-info">View</button>
-                    </td>
-                </tr>
+                @if (influencers == null)
+                {
+                    <tr><td colspan="6" class="text-center"><em>Loading influencers...</em></td></tr>
+                }
+                else
+                {
+                    var serialNumber = 1;
+                    @foreach (var influencer in influencers)
+                    {
+                        <tr>
+                            <th scope="row">@(serialNumber++)</th>
+                            <td>@influencer.Name</td>
+                            <td>@influencer.PhoneNumber</td>
+                            <td>@influencer.Commissions.Count</td>
+                            <td>FCFA @(influencer.CommissionEarned.ToString("N0")) XAF</td>
+                            <td>
+                                <a href="/admin/view-influencer/@influencer.Id" class="btn btn-sm btn-info">View</a>
+                            </td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
 
@@ -45,3 +60,16 @@
     </div>
 
 </div>
+
+@code {
+    private List<Influencer> influencers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // We use .Include() to also load the related Commissions for each influencer
+        // so we can get the total number of sales (Commissions.Count).
+        influencers = await DbContext.Influencers
+                                     .Include(i => i.Commissions)
+                                     .ToListAsync();
+    }
+}

@@ -1,88 +1,152 @@
-﻿@page "/add-product"
+﻿@page "/admin/add-product"
 @using MaillotStore.Components
+@using MaillotStore.Models
+@using MaillotStore.Models.ViewModels
+@using MaillotStore.Data
+@using Microsoft.AspNetCore.Components.Forms
+@inject ApplicationDbContext DbContext
+@inject NavigationManager NavigationManager
+@inject IWebHostEnvironment WebHostEnvironment
 
 <div class="d-flex admin-dashboard-container">
-
     <AdminSidebar />
-
     <div class="main-content-dashboard flex-grow-1 p-5">
-
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="text-white fw-bold">Add New Product</h1>
-            <a href="/products" class="btn btn-dark">Back</a>
+            <a href="/admin/products" class="btn btn-dark">Back</a>
         </div>
 
-        <form class="text-white">
+        <EditForm Model="@_model" OnValidSubmit="HandleAddProduct" FormName="addProductForm">
+            <DataAnnotationsValidator />
+
+            @* Display any custom validation errors here *@
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <div class="alert alert-danger">@_errorMessage</div>
+            }
+
+            @* All other form fields remain the same *@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="productName" class="form-label">Product Name:</label>
-                    <input type="text" class="form-control" id="productName">
+                    <InputText @bind-Value="_model.ProductName" class="form-control" id="productName" />
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="price" class="form-label">Price:</label>
-                    <input type="text" class="form-control" id="price">
+                    <InputNumber @bind-Value="_model.Price" class="form-control" id="price" />
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="jerseySeason" class="form-label">Jersey Season:</label>
                     <div class="d-flex">
-                        <select class="form-select me-2" id="jerseySeason">
+                        <InputSelect @bind-Value="_model.JerseyType" class="form-select me-2" id="jerseySeason">
                             <option>HOME</option>
                             <option>AWAY</option>
                             <option>THIRD</option>
-                        </select>
-                        <select class="form-select" id="jerseyYear">
+                        </InputSelect>
+                        <InputSelect @bind-Value="_model.JerseyYear" class="form-select" id="jerseyYear">
                             <option>2025/2026</option>
                             <option>2024/2025</option>
                             <option>2023/2024</option>
-                        </select>
+                        </InputSelect>
                     </div>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="stockQuantity" class="form-label">Stock Quantity:</label>
-                    <input type="text" class="form-control" id="stockQuantity">
+                    <InputNumber @bind-Value="_model.StockQuantity" class="form-control" id="stockQuantity" />
                 </div>
             </div>
-
             <div class="mb-3">
                 <label for="description" class="form-label">Description:</label>
-                <textarea class="form-control" id="description" rows="5"></textarea>
+                <InputTextArea @bind-Value="_model.Description" class="form-control" id="description" rows="5" />
             </div>
 
+            @* NEW DUAL IMAGE INPUT SECTION *@
             <div class="mb-3">
-                <label for="imageUpload" class="form-label">Image Upload:</label>
-                <div class="row">
-                    <div class="col-4">
-                        <input type="file" class="form-control" id="imageUpload1">
-                    </div>
-                    <div class="col-4">
-                        <input type="file" class="form-control" id="imageUpload2">
-                    </div>
-                    <div class="col-4">
-                        <input type="file" class="form-control" id="imageUpload3">
-                    </div>
-                </div>
+                <label for="imageUpload" class="form-label">Upload Image from PC:</label>
+                <InputFile OnChange="HandleFileSelected" class="form-control" id="imageUpload" />
+            </div>
+            <div class="text-center my-2 text-white fw-bold">OR</div>
+            <div class="mb-3">
+                <label for="imageUrl" class="form-label">Enter Image URL:</label>
+                <InputText @bind-Value="_model.ImageUrl" class="form-control" id="imageUrl" placeholder="https://example.com/image.jpg" />
             </div>
 
             <div class="mb-5">
                 <label class="form-label">Featured:</label>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="featuredYes" value="yes">
+                    <InputCheckbox @bind-Value="_model.IsFeatured" class="form-check-input" id="featuredYes" />
                     <label class="form-check-label" for="featuredYes">Yes</label>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="featuredNo" value="no">
-                    <label class="form-check-label" for="featuredNo">No</label>
-                </div>
             </div>
-
             <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-success me-2">Saved</button>
-                <button type="button" class="btn btn-danger">Cancel</button>
+                <button type="submit" class="btn btn-success me-2">Save Product</button>
+                <a href="/admin/products" class="btn btn-danger">Cancel</a>
             </div>
-        </form>
+        </EditForm>
     </div>
-
 </div>
+
+@code {
+    private AddProductViewModel _model = new();
+    private string _errorMessage;
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        _model.ImageFile = e.File;
+    }
+
+    private async Task HandleAddProduct()
+    {
+        _errorMessage = ""; // Clear any previous errors
+        string finalImageUrl = "";
+
+        // VALIDATION: Check that at least one image source is provided.
+        if (_model.ImageFile == null && string.IsNullOrWhiteSpace(_model.ImageUrl))
+        {
+            _errorMessage = "You must either upload an image or provide an image URL.";
+            return; // Stop the method
+        }
+
+        // PRIORITY: If a file is uploaded, use it.
+        if (_model.ImageFile != null)
+        {
+            var uploadsFolderPath = Path.Combine(WebHostEnvironment.WebRootPath, "Images", "products");
+            if (!Directory.Exists(uploadsFolderPath))
+            {
+                Directory.CreateDirectory(uploadsFolderPath);
+            }
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + _model.ImageFile.Name;
+            var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
+
+            await using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await _model.ImageFile.OpenReadStream(maxAllowedSize: 1024 * 1024 * 5).CopyToAsync(fileStream);
+            }
+            finalImageUrl = $"/Images/products/{uniqueFileName}";
+        }
+        // ELSE: If no file is uploaded, use the URL.
+        else
+        {
+            finalImageUrl = _model.ImageUrl;
+        }
+
+        var newProduct = new Product
+        {
+            Name = _model.ProductName,
+            Price = _model.Price,
+            Season = $"{_model.JerseyType}({_model.JerseyYear})",
+            StockQuantity = _model.StockQuantity,
+            Description = _model.Description,
+            ImageUrl = finalImageUrl, // Use the determined image path
+            IsFeatured = _model.IsFeatured,
+            Category = "Jersey"
+        };
+
+        DbContext.Products.Add(newProduct);
+        await DbContext.SaveChangesAsync();
+
+        NavigationManager.NavigateTo("/admin/products");
+    }
+}

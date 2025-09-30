@@ -198,6 +198,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxEYXNoYm9hcmQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/FLAVIN/OneDrive/Desktop/Maillot Store Website/MaillotStore/Components/Pages/Admin/EditProduct.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxFZGl0UHJvZHVjdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/FLAVIN/OneDrive/Desktop/Maillot Store Website/MaillotStore/Components/Pages/Admin/Influencers.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xBZG1pblxJbmZsdWVuY2Vycy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -240,10 +244,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/FLAVIN/OneDrive/Desktop/Maillot Store Website/MaillotStore/Components/Pages/InfluencerDashboard.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xJbmZsdWVuY2VyRGFzaGJvYXJkLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/FLAVIN/OneDrive/Desktop/Maillot Store Website/MaillotStore/Components/Pages/Login.razor]
-build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xMb2dpbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/FLAVIN/OneDrive/Desktop/Maillot Store Website/MaillotStore/Components/Pages/ProductDetail.razor]

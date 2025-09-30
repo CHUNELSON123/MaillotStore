@@ -1,49 +1,43 @@
-﻿<div class="full-width-section featured-jerseys-container">
+﻿@using MaillotStore.Data
+@using MaillotStore.Models
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+
+<div class="full-width-section featured-jerseys-container">
     <div class="container py-5">
         <h2 class="text-center mb-5 text-white">Featured Jerseys</h2>
 
         <div class="row">
-
-            <ProductCard ImageUrl="/Images/PSG_Away_Jersey.jpg"
-                         Title="Paris Saint Germain Home Jersey"
-                         Price="FCFA 20,000 XAF"
-                         Season="HOME(2024/2025)" />
-
-            <ProductCard ImageUrl="/Images/atlectico.png"
-                         Title="Atletico AWAY Jersey (Griezman)"
-                         Price="FCFA 15,000 XAF"
-                         Season="AWAY(2025/2026)" />
-
-            <ProductCard ImageUrl="/Images/Liverpool.jpeg"
-                         Title="Liverpool Home Kit"
-                         Price="FCFA 35,000 XAF"
-                         Season="HOME(2025/2026)" />
-
-            <ProductCard ImageUrl="/Images/wolves.jpg"
-                         Title="Wolves Kit"
-                         Price="FCFA 10,000 XAF"
-                         Season="THIRD(2025/2026)" />
-
-            <ProductCard ImageUrl="/Images/PSG_Away_Jersey.jpg"
-                         Title="Paris Saint Germain Home Jersey"
-                         Price="FCFA 20,000 XAF"
-                         Season="HOME(2024/2025)" />
-
-            <ProductCard ImageUrl="/Images/atlectico.png"
-                         Title="Atletico AWAY Jersey (Griezman)"
-                         Price="FCFA 15,000 XAF"
-                         Season="AWAY(2025/2026)" />
-
-            <ProductCard ImageUrl="/Images/Liverpool.jpeg"
-                         Title="Liverpool Home Kit"
-                         Price="FCFA 35,000 XAF"
-                         Season="HOME(2025/2026)" />
-
-            <ProductCard ImageUrl="/Images/wolves.jpg"
-                         Title="Wolves Kit"
-                         Price="FCFA 10,000 XAF"
-                         Season="THIRD(2025/2026)" />
-
+            @if (_featuredProducts == null)
+            {
+                <p class="text-white"><em>Loading jerseys...</em></p>
+            }
+            else if (!_featuredProducts.Any())
+            {
+                <p class="text-white text-center"><em>No featured products have been set yet.</em></p>
+            }
+            else
+            {
+                @foreach (var product in _featuredProducts)
+                {
+                    <ProductCard Product="product" />
+                }
+            }
         </div>
     </div>
 </div>
+
+@code {
+    private List<Product> _featuredProducts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Use the DbContextFactory for a fresh, reliable connection
+        await using var dbContext = DbFactory.CreateDbContext();
+
+        // The .Take(4) has been removed to show all featured products.
+        _featuredProducts = await dbContext.Products
+                                           .Where(p => p.IsFeatured)
+                                           .ToListAsync();
+    }
+}

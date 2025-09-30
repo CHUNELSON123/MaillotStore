@@ -1,0 +1,171 @@
+﻿@page "/admin/edit-product/{ProductId:int}"
+@using MaillotStore.Models
+@using MaillotStore.Models.ViewModels
+@using MaillotStore.Data
+@using Microsoft.AspNetCore.Components.Forms
+@inject ApplicationDbContext DbContext
+@inject NavigationManager NavigationManager
+@inject IWebHostEnvironment WebHostEnvironment
+
+<div class="d-flex admin-dashboard-container">
+    <AdminSidebar />
+    <div class="main-content-dashboard flex-grow-1 p-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-white fw-bold">Edit Product</h1>
+            <a href="/admin/products" class="btn btn-dark">Back</a>
+        </div>
+
+        @if (_model == null)
+        {
+            <p class="text-white"><em>Loading product details...</em></p>
+        }
+        else
+        {
+            <EditForm Model="@_model" OnValidSubmit="HandleUpdateProduct" FormName="editProductForm">
+                <DataAnnotationsValidator />
+                @if (!string.IsNullOrEmpty(_errorMessage))
+                {
+                    <div class="alert alert-danger">@_errorMessage</div>
+                }
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Product Name:</label>
+                        <InputText @bind-Value="_model.ProductName" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Price:</label>
+                        <InputNumber @bind-Value="_model.Price" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Jersey Season:</label>
+                        <div class="d-flex">
+                            <InputSelect @bind-Value="_model.JerseyType" class="form-select me-2">
+                                <option>HOME</option>
+                                <option>AWAY</option>
+                                <option>THIRD</option>
+                            </InputSelect>
+                            <InputSelect @bind-Value="_model.JerseyYear" class="form-select">
+                                <option>2025/2026</option>
+                                <option>2024/2025</option>
+                                <option>2023/2024</option>
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Stock Quantity:</label>
+                        <InputNumber @bind-Value="_model.StockQuantity" class="form-control" />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Description:</label>
+                    <InputTextArea @bind-Value="_model.Description" class="form-control" rows="5" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Current Image:</label>
+                    <div>
+                        <img src="@_model.ImageUrl" style="max-width: 100px; max-height: 100px;" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Upload New Image (Optional):</label>
+                    <InputFile OnChange="HandleFileSelected" class="form-control" />
+                </div>
+                <div class="text-center my-2 text-white fw-bold">OR</div>
+                <div class="mb-3">
+                    <label class="form-label">Enter New Image URL (Optional):</label>
+                    <InputText @bind-Value="_model.ImageUrl" class="form-control" placeholder="Enter new URL to change image" />
+                </div>
+
+                <div class="mb-5">
+                    <label class="form-label">Featured:</label>
+                    <div class="form-check form-check-inline">
+                        <InputCheckbox @bind-Value="_model.IsFeatured" class="form-check-input" />
+                        <label class="form-check-label">Yes</label>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success me-2">Update Product</button>
+                    <a href="/admin/products" class="btn btn-danger">Cancel</a>
+                </div>
+            </EditForm>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int ProductId { get; set; }
+
+    private AddProductViewModel _model;
+    private string _errorMessage;
+    private Product _productToUpdate;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _productToUpdate = await DbContext.Products.FindAsync(ProductId);
+        if (_productToUpdate != null)
+        {
+            // Parse the Season string back into its parts
+            string season = _productToUpdate.Season ?? "HOME(2025/2026)";
+            string jerseyType = season.Split('(')[0];
+            string jerseyYear = season.Contains('(') ? season.Split('(')[1].TrimEnd(')') : "2025/2026";
+
+            _model = new AddProductViewModel
+            {
+                ProductName = _productToUpdate.Name,
+                Price = _productToUpdate.Price,
+                JerseyType = jerseyType,
+                JerseyYear = jerseyYear,
+                StockQuantity = _productToUpdate.StockQuantity,
+                Description = _productToUpdate.Description,
+                ImageUrl = _productToUpdate.ImageUrl,
+                IsFeatured = _productToUpdate.IsFeatured
+            };
+        }
+    }
+
+    private void HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        _model.ImageFile = e.File;
+    }
+
+    private async Task HandleUpdateProduct()
+    {
+        _errorMessage = "";
+        string finalImageUrl = _productToUpdate.ImageUrl; // Keep old image by default
+
+        if (_model.ImageFile != null) // If a new file is uploaded, it takes top priority
+        {
+            var uploadsFolderPath = Path.Combine(WebHostEnvironment.WebRootPath, "Images", "products");
+            var uniqueFileName = Guid.NewGuid().ToString() + "_" + _model.ImageFile.Name;
+            var filePath = Path.Combine(uploadsFolderPath, uniqueFileName);
+            await using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await _model.ImageFile.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024).CopyToAsync(fileStream);
+            }
+            finalImageUrl = $"/Images/products/{uniqueFileName}";
+        }
+        else if (!string.IsNullOrWhiteSpace(_model.ImageUrl) && _model.ImageUrl != _productToUpdate.ImageUrl)
+        {
+            // If no file is uploaded but the URL has been changed, use the new URL
+            finalImageUrl = _model.ImageUrl;
+        }
+
+        // Update the properties of the product we loaded earlier
+        _productToUpdate.Name = _model.ProductName;
+        _productToUpdate.Price = _model.Price;
+        _productToUpdate.Season = $"{_model.JerseyType}({_model.JerseyYear})";
+        _productToUpdate.StockQuantity = _model.StockQuantity;
+        _productToUpdate.Description = _model.Description;
+        _productToUpdate.ImageUrl = finalImageUrl;
+        _productToUpdate.IsFeatured = _model.IsFeatured;
+
+        await DbContext.SaveChangesAsync();
+        NavigationManager.NavigateTo("/admin/products");
+    }
+}

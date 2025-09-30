@@ -1,68 +1,144 @@
 ﻿@page "/influencer-dashboard"
 @using MaillotStore.Components
 @using MaillotStore.Components.Sections
+@using System.Security.Claims
+@using MaillotStore.Data
+@using MaillotStore.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ApplicationDbContext> DbFactory
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@attribute [Authorize(Roles = "Influencer")]
 
 <div class="influencer-dashboard-page-container">
-
     <HomePageSearchBar />
 
-    <div class="full-width-section influencer-dashboard-container">
-        <div class="container py-5">
-            <h1 class="text-white fw-bold mb-5">WELCOME, Beh Chu</h1>
+    @if (_influencer == null)
+    {
+        <p class="text-white text-center"><em>Loading dashboard...</em></p>
+    }
+    else
+    {
+        <div class="full-width-section influencer-dashboard-container">
+            <div class="container py-5">
+                <h1 class="text-white fw-bold mb-5">WELCOME, @_influencer.Name.ToUpper()</h1>
 
-            <h3 class="text-white fw-bold">Referral Code: <span class="fw-normal">BEHCHU123</span></h3>
-            <h3 class="text-white fw-bold mb-3">Referral Link: <span class="fw-normal">https://maillotstore.com/?ref=BEHCHU123</span></h3>
-            <a href="#" class="text-info">Copy Link</a>
-            <h5 class="text-white fw-bold mt-4 mb-3">Share Link Via</h5>
-            <div class="d-flex social-links mb-5">
-                <a href="#" class="text-white me-3"><i class="bi bi-whatsapp fs-4"></i></a>
-                <a href="#" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
-            </div>
-            <h2 class="text-white fw-bold mb-4">Your Sales via Referral Link</h2>
-            <div class="table-responsive">
-                <table class="table table-bordered text-white admin-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">S/N</th>
-                            <th scope="col">Date and Time</th>
-                            <th scope="col">Customer Name</th>
-                            <th scope="col">Product</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Commission</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>19/09/2025 13:51</td>
-                            <td>CHU NELSON</td>
-                            <td>Barca Jersey</td>
-                            <td>35,000</td>
-                            <td>5,000</td>
-                            <td>Paid</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <h3 class="text-white fw-bold">Referral Code: <span class="fw-normal">@_influencer.ReferralCode</span></h3>
+                <h3 class="text-white fw-bold mb-3">Referral Link: <span class="fw-normal">@_referralLink</span></h3>
+                <button class="btn btn-info btn-sm" @onclick="CopyReferralLink">Copy Link</button>
 
-            <h2 class="text-white fw-bold mt-5 mb-4">Your Performance</h2>
-            <div class="row mb-5 text-white">
-                <div class="col-md-3">
-                    <p>Total Sale: 12</p>
+                <h5 class="text-white fw-bold mt-4 mb-3">Share Link Via</h5>
+                <div class="d-flex social-links mb-5">
+                    <a href="@_whatsappShareUrl" target="_blank" class="text-white me-3"><i class="bi bi-whatsapp fs-4"></i></a>
+                    <a href="@_instagramShareUrl" target="_blank" class="text-white me-3"><i class="bi bi-instagram fs-4"></i></a>
                 </div>
-                <div class="col-md-3">
-                    <p>Commission Earned: 7,500</p>
+
+                <h2 class="text-white fw-bold mb-4">Your Sales via Referral Link</h2>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-white admin-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">S/N</th>
+                                <th scope="col">Date and Time</th>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Product(s)</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Commission</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (!_influencer.Commissions.Any())
+                            {
+                                <tr><td colspan="7" class="text-center">No sales recorded yet.</td></tr>
+                            }
+                            else
+                            {
+                                var serial = 1;
+                                @foreach (var commission in _influencer.Commissions.OrderByDescending(c => c.Date))
+                                {
+                                    <tr>
+                                        <th scope="row">@(serial++)</th>
+                                        <td>@commission.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>@commission.Order.CustomerName</td>
+                                        <td>@commission.Order.OrderItems.Count</td>
+                                        <td>FCFA @commission.Order.TotalPrice.ToString("N0") XAF</td>
+                                        <td>FCFA @commission.Amount.ToString("N0") XAF</td>
+                                        <td>@(commission.IsPaid ? "Paid" : "Unpaid")</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                <div class="col-md-3">
-                    <p>Commission Paid: 5,500</p>
-                </div>
-                <div class="col-md-3">
-                    <p>Balance Remaining: 2,000</p>
+
+                <h2 class="text-white fw-bold mt-5 mb-4">Your Performance</h2>
+                <div class="row mb-5 text-white">
+                    <div class="col-md-3">
+                        <p>Total Sales</p>
+                        <p class="fs-4 fw-bold">@_influencer.Commissions.Count</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p>Commission Earned</p>
+                        <p class="fs-4 fw-bold">FCFA @_influencer.CommissionEarned.ToString("N0") XAF</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p>Commission Paid</p>
+                        <p class="fs-4 fw-bold">FCFA @_influencer.CommissionPaid.ToString("N0") XAF</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p>Balance Remaining</p>
+                        <p class="fs-4 fw-bold">FCFA @((_influencer.CommissionEarned - _influencer.CommissionPaid).ToString("N0")) XAF</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    }
     <Footer />
 </div>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    private Influencer _influencer;
+    private string _referralLink;
+    private string _whatsappShareUrl;
+    private string _instagramShareUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateTask;
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userEmail = user.FindFirstValue(ClaimTypes.Email);
+            if (userEmail != null)
+            {
+                await using var dbContext = DbFactory.CreateDbContext();
+                _influencer = await dbContext.Influencers
+                    .Include(i => i.Commissions)
+                        .ThenInclude(c => c.Order)
+                            .ThenInclude(o => o.OrderItems)
+                    .FirstOrDefaultAsync(i => i.Email == userEmail);
+
+                if (_influencer != null)
+                {
+                    _referralLink = $"{NavigationManager.BaseUri}?ref={_influencer.ReferralCode}";
+                    var shareText = Uri.EscapeDataString($"Check out the amazing jerseys at MaillotStore! Use my link: {_referralLink}");
+                    _whatsappShareUrl = $"https://wa.me/?text={shareText}";
+                    // Instagram doesn't have a direct share link with text, so this is just a placeholder
+                    _instagramShareUrl = "https://instagram.com";
+                }
+            }
+        }
+    }
+
+    private async Task CopyReferralLink()
+    {
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", _referralLink);
+        // We can add a "Copied!" notification here later
+    }
+}

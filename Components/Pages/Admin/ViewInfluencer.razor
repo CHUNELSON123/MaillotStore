@@ -1,68 +1,121 @@
-﻿@page "/view-influencer"
+﻿@page "/admin/view-influencer/{InfluencerId:int}"
 @using MaillotStore.Components
+@using MaillotStore.Data
+@using MaillotStore.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@inject NavigationManager NavigationManager
 
 <div class="d-flex admin-dashboard-container">
 
     <AdminSidebar />
 
     <div class="main-content-dashboard flex-grow-1 p-5">
-        <h1 class="text-white fw-bold mb-5">Influencer Details - Annie</h1>
-        
-        <h2 class="text-white fw-bold">Personal Info:</h2>
-        <h5 class="text-white fw-normal mt-3">Name: <span class="fw-bold">Annie</span></h5>
-        <h5 class="text-white fw-normal">Phone: <span class="fw-bold">67x xxx xxx</span></h5>
-        <h5 class="text-white fw-normal">Email: <span class="fw-bold">annie@gmail.com</span></h5>
-        <h5 class="text-white fw-normal">Referral Code: <span class="fw-bold">ANNIE123</span></h5>
-        <h5 class="text-white fw-normal mb-5">Joined: <span class="fw-bold">20/09/2025</span></h5>
-        
-        <h2 class="text-white fw-bold">Performance:</h2>
-        <div class="row mb-5 text-white">
-            <div class="col-md-3">
-                <p>Total Sales</p>
-                <p class="fs-4 fw-bold">5</p>
-            </div>
-            <div class="col-md-3">
-                <p>Commission Earned</p>
-                <p class="fs-4 fw-bold">FCFA 7,500</p>
-            </div>
-            <div class="col-md-3">
-                <p>Commission Paid</p>
-                <p class="fs-4 fw-bold">FCFA 5,500</p>
-            </div>
-            <div class="col-md-3">
-                <p>Balance Remaining</p>
-                <p class="fs-4 fw-bold">FCFA 2,000</p>
-            </div>
-        </div>
+        @if (_influencer == null)
+        {
+            <p class="text-white"><em>Loading influencer details...</em></p>
+        }
+        else
+        {
+            <h1 class="text-white fw-bold mb-5">Influencer Details - @_influencer.Name</h1>
 
-        <h2 class="text-white fw-bold mb-4">Sales via Referrals:</h2>
-        <table class="table table-bordered text-white admin-table">
-            <thead>
-                <tr>
-                    <th scope="col">S/N</th>
-                    <th scope="col">Date and Time</th>
-                    <th scope="col">Product</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Commission</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>22/09/25 02:00</td>
-                    <td>Barca Jersey</td>
-                    <td>2</td>
-                    <td>35,000 XAF</td>
-                    <td>8,000 XAF</td>
-                </tr>
-            </tbody>
-        </table>
+            <h2 class="text-white fw-bold">Personal Info:</h2>
+            <h5 class="text-white fw-normal mt-3">Name: <span class="fw-bold">@_influencer.Name</span></h5>
+            <h5 class="text-white fw-normal">Phone: <span class="fw-bold">@_influencer.PhoneNumber</span></h5>
+            <h5 class="text-white fw-normal">Email: <span class="fw-bold">@_influencer.Email</span></h5>
+            <h5 class="text-white fw-normal">Referral Code: <span class="fw-bold">@_influencer.ReferralCode</span></h5>
+            <h5 class="text-white fw-normal mb-5">Joined: <span class="fw-bold">@_influencer.JoinedDate.ToShortDateString()</span></h5>
 
-        <div class="d-flex justify-content-end mt-4">
-            <a href="#" class="btn btn-dark">Back</a>
-        </div>
-        
+            <h2 class="text-white fw-bold">Performance:</h2>
+            <div class="row mb-5 text-white">
+                <div class="col-md-3">
+                    <p>Total Sales</p>
+                    <p class="fs-4 fw-bold">@_influencer.Commissions.Count</p>
+                </div>
+                <div class="col-md-3">
+                    <p>Commission Earned</p>
+                    <p class="fs-4 fw-bold">FCFA @(_influencer.CommissionEarned.ToString("N0")) XAF</p>
+                </div>
+                <div class="col-md-3">
+                    <p>Commission Paid</p>
+                    <p class="fs-4 fw-bold">FCFA @(_influencer.CommissionPaid.ToString("N0")) XAF</p>
+                </div>
+                <div class="col-md-3">
+                    <p>Balance Remaining</p>
+                    <p class="fs-4 fw-bold">FCFA @((_influencer.CommissionEarned - _influencer.CommissionPaid).ToString("N0")) XAF</p>
+                </div>
+            </div>
+
+            <h2 class="text-white fw-bold mb-4">Sales via Referrals:</h2>
+            <table class="table table-bordered text-white admin-table">
+                <thead>
+                    <tr>
+                        <th scope="col">S/N</th>
+                        <th scope="col">Date and Time</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Commission</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!_influencer.Commissions.Any())
+                    {
+                        <tr><td colspan="7" class="text-center"><em>No sales recorded yet.</em></td></tr>
+                    }
+                    else
+                    {
+                        var serialNumber = 1;
+                        @foreach (var commission in _influencer.Commissions)
+                        {
+                            <tr>
+                                <th scope="row">@(serialNumber++)</th>
+                                <td>@commission.Date.ToString("dd/MM/yy HH:mm")</td>
+                                <td>
+                                    @foreach (var item in commission.Order.OrderItems)
+                                    {
+                                        <div>@item.Product.Name</div>
+                                    }
+                                </td>
+                                <td>
+                                    @foreach (var item in commission.Order.OrderItems)
+                                    {
+                                        <div>@item.Quantity</div>
+                                    }
+                                </td>
+                                <td>FCFA @(commission.Order.TotalPrice.ToString("N0")) XAF</td>
+                                <td>FCFA @(commission.Amount.ToString("N0")) XAF</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-end mt-4">
+                <button @onclick="GoBack" class="btn btn-dark">Back</button>
+            </div>
+        }
     </div>
-
 </div>
+
+@code {
+    [Parameter]
+    public int InfluencerId { get; set; }
+
+    private Influencer _influencer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _influencer = await DbContext.Influencers
+            .Include(i => i.Commissions)
+                .ThenInclude(c => c.Order)
+                    .ThenInclude(o => o.OrderItems)
+                        .ThenInclude(oi => oi.Product)
+            .FirstOrDefaultAsync(i => i.Id == InfluencerId);
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/admin/influencers");
+    }
+}

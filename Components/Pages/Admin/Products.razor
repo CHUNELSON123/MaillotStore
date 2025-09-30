@@ -1,17 +1,20 @@
-﻿@page "/products"
+﻿@page "/admin/products"
 @using MaillotStore.Components
+@using MaillotStore.Data
+@using MaillotStore.Models
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject IWebHostEnvironment WebHostEnvironment
 
 <div class="d-flex admin-dashboard-container">
-
     <AdminSidebar />
-
     <div class="main-content-dashboard flex-grow-1 p-5">
         <h1 class="text-white fw-bold mb-5">Product List</h1>
-
         <div class="d-flex justify-content-end mb-4">
-            <button class="btn btn-primary">Add New Product</button>
+            <button class="btn btn-primary" @onclick="GoToAddProduct">Add New Product</button>
         </div>
-
         <table class="table table-bordered text-white admin-table">
             <thead>
                 <tr>
@@ -23,30 +26,29 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Atletico de madrid home jersey...</td>
-                    <td>FCFA 15,000</td>
-                    <td>45</td>
-                    <td>
-                        <button class="btn btn-sm btn-info me-2">Edit</button>
-                        <button class="btn btn-sm btn-danger">Delete</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Barcelona home jersey...</td>
-                    <td>FCFA 30,000</td>
-                    <td>45</td>
-                    <td>
-                        <button class="btn btn-sm btn-info me-2">Edit</button>
-                        <button class="btn btn-sm btn-danger">Delete</button>
-                    </td>
-                </tr>
+                @if (_products == null)
+                {
+                    <tr><td colspan="5"><em>Loading...</em></td></tr>
+                }
+                else
+                {
+                    var serialNumber = 1;
+                    @foreach (var product in _products)
+                    {
+                        <tr>
+                            <th scope="row">@(serialNumber++)</th>
+                            <td>@product.Name</td>
+                            <td>@product.Price.ToString("C")</td>
+                            <td>@product.StockQuantity</td>
+                            <td>
+                                <a href="/admin/edit-product/@product.Id" class="btn btn-sm btn-info me-2">Edit</a>
+                                <button class="btn btn-sm btn-danger" @onclick="() => DeleteProduct(product)">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
-
         <nav aria-label="Product page navigation" class="d-flex justify-content-center mt-5 mb-5">
             <ul class="pagination">
                 <li class="page-item"><a class="page-link" href="#">Previous</a></li>
@@ -57,5 +59,43 @@
             </ul>
         </nav>
     </div>
-
 </div>
+
+@code {
+    private List<Product> _products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProducts();
+    }
+
+    private async Task LoadProducts()
+    {
+        _products = await DbContext.Products.OrderByDescending(p => p.Id).ToListAsync();
+    }
+
+    private void GoToAddProduct()
+    {
+        NavigationManager.NavigateTo("/admin/add-product");
+    }
+
+    private async Task DeleteProduct(Product productToDelete)
+    {
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete '{productToDelete.Name}'?");
+        if (confirmed)
+        {
+            if (!string.IsNullOrEmpty(productToDelete.ImageUrl) && !productToDelete.ImageUrl.StartsWith("http"))
+            {
+                var filePath = Path.Combine(WebHostEnvironment.WebRootPath, productToDelete.ImageUrl.TrimStart('/'));
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+            }
+
+            DbContext.Products.Remove(productToDelete);
+            await DbContext.SaveChangesAsync();
+            await LoadProducts();
+        }
+    }
+}

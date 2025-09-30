@@ -1,35 +1,48 @@
-﻿<div class="col-6 col-md-3 mb-4">
+﻿@using MaillotStore.Models
+@using MaillotStore.Services
+@inject CartService CartService
+
+@* This class combination ensures 2 products per row on small screens and 4 on medium screens and up *@
+<div class="col-6 col-md-3 mb-4">
     <div class="card product-card h-100">
-        <img class="card-img-top"
-             src="@ImageUrl"
-             alt="@Title"
-             style="height: 300px; object-fit: cover;" />
+        <div class="product-image-container">
+            <a href="/product-detail/@Product.Id">
+                <img src="@Product.ImageUrl" class="card-img-top" alt="@Product.Name">
+            </a>
+            <AuthorizeView Roles="Influencer">
+                <div class="share-icon">
+                    <i class="fas fa-share-alt"></i>
+                </div>
+            </AuthorizeView>
+        </div>
+        <div class="card-body d-flex flex-column">
+            <h5 class="card-title">@Product.Name</h5>
+            <p class="card-text text-muted">@Product.Season</p>
+            <p class="card-text fw-bold mt-auto">FCFA @Product.Price.ToString("N0") XAF</p>
 
-        <div class="card-body">
-            @* NOTE: Removed text-center here and will rely on CSS for alignment *@
-            <h5 class="card-title product-title">@Title</h5>
-            <p class="product-price mb-3">@Price</p>
-            <p class="product-season mb-3">@Season</p>
-
-            <a href="@LinkUrl" class="btn btn-sm btn-dark w-75 mb-2">View Details</a>
-            <a href="#" class="btn btn-sm btn-primary w-75">Add to Cart</a>
+            @* Restored button layout and styling *@
+            <div class="d-grid gap-2">
+                <a href="/product-detail/@Product.Id" class="btn btn-dark">View Details</a>
+                <button class="btn btn-primary" @onclick="AddToCart">Add to Cart</button>
+            </div>
         </div>
     </div>
 </div>
 
 @code {
     [Parameter]
-    public string ImageUrl { get; set; } = "/Images/placeholder.png";
+    public Product Product { get; set; }
 
-    [Parameter]
-    public string Title { get; set; } = "Placeholder Jersey Title";
+    private void AddToCart()
+    {
+        var orderItem = new OrderItem
+        {
+            ProductId = Product.Id,
+            Product = Product,
+            Quantity = 1,
+            Subtotal = Product.Price
+        };
 
-    [Parameter]
-    public string Price { get; set; } = "FCFA 0 XAF";
-
-    [Parameter]
-    public string Season { get; set; } = "(Season N/A)";
-
-    [Parameter]
-    public string LinkUrl { get; set; } = "#"; // For View Details link
+        CartService.AddToCart(orderItem);
+    }
 }

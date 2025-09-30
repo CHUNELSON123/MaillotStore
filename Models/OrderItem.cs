@@ -19,5 +19,7 @@ namespace MaillotStore.Models
 
         public string PlayerName { get; set; }
         public string PlayerNumber { get; set; }
+
+        public string Size { get; set; }
     }
 }
